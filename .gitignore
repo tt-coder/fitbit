@@ -1,1 +1,4 @@
 /auth_data.py
+*.pyc
+*.py
+/__pycache__/
