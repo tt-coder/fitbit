@@ -12,6 +12,7 @@ DATE = "2017-09-04"
 authd_client = fitbit.Fitbit(ad.CLIENT_ID, ad.CLIENT_SECRET,
                 access_token=ad.ACCESS_TOKEN, refresh_token=ad.REFRESH_TOKEN)
 #data = authd_client.intraday_time_series('activities/heart', base_date="2017-09-04", detail_level='1min', start_time="07:00", end_time="09:00")
+"""
 data = authd_client.sleep(date=DATE)
 data = data["sleep"][0]["minuteData"]
 
@@ -34,11 +35,12 @@ daysFmt = mdates.DateFormatter("%H:%M")
 ax.xaxis.set_major_locator(days)
 ax.xaxis.set_major_formatter(daysFmt)
 plt.show()
-
+"""
 
 #print(json.dumps(data[0], indent=4))
 
 #authd_client = fitbit.Fitbit(CLIENT_ID, CLIENT_SECRET, access_token=ACCESS_TOKEN, refresh_token=REFRESH_TOKEN)
 
-#data_sec = authd_client.intraday_time_series("activities/heart", DATE, datail_level="1sec")
+data_sec = authd_client.intraday_time_series("activities/heart", DATE, detail_level="1min")
+print(json.dumps(data_sec["activities-heart-intraday"]["dataset"][0], indent=4))
 #heart_sec = data_sec["activities-heart-intraday"]["dataset"
