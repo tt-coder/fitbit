@@ -7,13 +7,17 @@ import json
 import auth_data as ad
 from datetime import datetime as dt
 
-DATE = "2017-09-04"
+DATE = "2017-09-06"
 
 authd_client = fitbit.Fitbit(ad.CLIENT_ID, ad.CLIENT_SECRET,
                 access_token=ad.ACCESS_TOKEN, refresh_token=ad.REFRESH_TOKEN)
 #data = authd_client.intraday_time_series('activities/heart', base_date="2017-09-04", detail_level='1min', start_time="07:00", end_time="09:00")
-"""
+
 data = authd_client.sleep(date=DATE)
+
+print(json.dumps(data, indent=4))
+
+"""
 data = data["sleep"][0]["minuteData"]
 
 time_d = []
@@ -41,6 +45,6 @@ plt.show()
 
 #authd_client = fitbit.Fitbit(CLIENT_ID, CLIENT_SECRET, access_token=ACCESS_TOKEN, refresh_token=REFRESH_TOKEN)
 
-data_sec = authd_client.intraday_time_series("activities/heart", DATE, detail_level="1min")
-print(json.dumps(data_sec["activities-heart-intraday"]["dataset"][0], indent=4))
+#data_sec = authd_client.intraday_time_series("activities/heart", DATE, detail_level="1min")
+#print(json.dumps(data_sec["activities-heart-intraday"]["dataset"][0], indent=4))
 #heart_sec = data_sec["activities-heart-intraday"]["dataset"
