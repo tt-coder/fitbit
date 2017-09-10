@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from matplotlib.ticker import *
 from mpl_toolkits.axes_grid.parasite_axes import SubplotHost
 import fitbit
 import json
@@ -18,6 +19,7 @@ time_h = []
 heart = []
 time_s = []
 state = []
+discomfort = []
 
 def read_csv():
     file = "./temp-data/" + DATE + "-data.csv"
@@ -60,9 +62,10 @@ def draw_sleep_temp():
     host.set_ylabel("State")
     par1.set_ylabel("Temperature [℃]")
     host.set_xlim(time_s[0], time_s[len(time_s)-1])
+    host.yaxis.set_major_locator(MultipleLocator(1))
     par1.set_ylim(0, 30)
     p1, = host.plot(time_s, state, label="State")
-    p2, = par1.plot(time_t, temp, label="Temperature")
+    p2, = par1.plot(time_t, temp, color="r", label="Temperature")
     host.legend()
     host.axis["left"].label.set_color(p1.get_color())
     par1.axis["right"].label.set_color(p2.get_color())
@@ -86,9 +89,10 @@ def draw_sleep_humid():
     host.set_ylabel("State")
     par1.set_ylabel("Humidity [%]")
     host.set_xlim(time_s[0], time_s[len(time_s)-1])
+    host.yaxis.set_major_locator(MultipleLocator(1))
     par1.set_ylim(0, 90)
     p1, = host.plot(time_s, state, label="State")
-    p2, = par1.plot(time_t, humid, label="Humidity")
+    p2, = par1.plot(time_t, humid, color="r", label="Humidity")
     host.legend()
     host.axis["left"].label.set_color(p1.get_color())
     par1.axis["right"].label.set_color(p2.get_color())
@@ -112,9 +116,10 @@ def draw_sleep_heart():
     host.set_ylabel("State")
     par1.set_ylabel("HeartRate [bpm]")
     host.set_xlim(time_s[0], time_s[len(time_s)-1])
+    host.yaxis.set_major_locator(MultipleLocator(1))
     par1.set_ylim(0, 100)
     p1, = host.plot(time_s, state, label="State")
-    p2, = par1.plot(time_h, heart, label="HeartRate")
+    p2, = par1.plot(time_h, heart, color="r", label="HeartRate")
     host.legend()
     host.axis["left"].label.set_color(p1.get_color())
     par1.axis["right"].label.set_color(p2.get_color())
@@ -141,7 +146,7 @@ def draw_heart_temp():
     host.set_ylim(0, 100)
     par1.set_ylim(0, 35)
     p1, = host.plot(time_h, heart, label="HeartRate")
-    p2, = par1.plot(time_t, temp, label="Temperature")
+    p2, = par1.plot(time_t, temp, color="r", label="Temperature")
     host.legend()
     host.axis["left"].label.set_color(p1.get_color())
     par1.axis["right"].label.set_color(p2.get_color())
@@ -153,15 +158,49 @@ def draw_heart_temp():
     par1.xaxis.set_major_formatter(daysFmt)
     plt.show()
 
+def draw_sleep_discomfort():
+    for i in range(0, len(time_t)):
+        tmp_t = float(temp[i])
+        tmp_h = float(humid[i])
+        value = 0.81*tmp_t + 0.01*tmp_h*(0.99*tmp_t-14.3) + 46.3
+        discomfort.append(value)
+    fig = plt.figure(1)
+    host = SubplotHost(fig, 111)
+    par1 = host.twinx()
+    par1.axis["right"].set_visible(True)
+    #offset = 60, 0
+    fig.add_axes(host)
+    plt.subplots_adjust(right=0.75)
+    host.set_xlabel("Time")
+    host.set_ylabel("State")
+    par1.set_ylabel("Discomfort Index")
+    host.set_xlim(time_s[0], time_s[len(time_s)-1])
+    host.yaxis.set_major_locator(MultipleLocator(1))
+    par1.set_ylim(0, 100)
+    p1, = host.plot(time_s, state, label="State")
+    p2, = par1.plot(time_t, discomfort, color="r", label="Discomfort Index")
+    host.legend()
+    host.axis["left"].label.set_color(p1.get_color())
+    par1.axis["right"].label.set_color(p2.get_color())
+    days = mdates.AutoDateLocator()
+    daysFmt = mdates.DateFormatter("%H:%M")
+    host.xaxis.set_major_locator(days)
+    host.xaxis.set_major_formatter(daysFmt)
+    par1.xaxis.set_major_locator(days)
+    par1.xaxis.set_major_formatter(daysFmt)
+    plt.show()
+    print(discomfort)
+
 read_csv()
 get_fitbit_data()
 time_t = pd.to_datetime(time_t)
 time_s = pd.to_datetime(time_s)
 time_h = pd.to_datetime(time_h)
-draw_sleep_temp()
-draw_sleep_humid()
-draw_sleep_heart()
-draw_heart_temp()
+#draw_sleep_temp()
+#draw_sleep_humid()
+#draw_sleep_heart()
+#draw_heart_temp()
+draw_sleep_discomfort()
 
 """
 fig = plt.figure()
